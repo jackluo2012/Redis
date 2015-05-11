@@ -1,12 +1,12 @@
 package Redis
 
 import (
-	"github.com/redigo/redis"
 	"fmt"
+	"github.com/garyburd/redigo/redis"
 )
 
-func (r *RedisType) Publish (channel string, message interface {}) (int,error){
-	row,err := redis.Int(r.RedisConn.Do("PUBLISH", channel, message))
+func (r *RedisType) Publish(channel string, message interface{}) (int, error) {
+	row, err := redis.Int(r.RedisConn.Do("PUBLISH", channel, message))
 	return row, err
 }
 
@@ -15,12 +15,12 @@ func (r *RedisType) Pubsub() redis.PubSubConn {
 	return psc
 }
 
-func (r *RedisType) Listen (psc redis.PubSubConn) map[string]interface {}{
-	data := make(map[string]interface {})
+func (r *RedisType) Listen(psc redis.PubSubConn) map[string]interface{} {
+	data := make(map[string]interface{})
 	switch v := psc.Receive().(type) {
 	case redis.Message:
 		data["channel"] = v.Channel
-		data["data"] = fmt.Sprintf("%s",v.Data)
+		data["data"] = fmt.Sprintf("%s", v.Data)
 		data["type"] = "message"
 		return data
 	case redis.Subscription:
